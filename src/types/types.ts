@@ -6,3 +6,12 @@ export type Menutype = {
   img?: string;
   color: string;
 }[];
+
+export type Product = {
+  id: string;
+  title: string;
+  desc?: string;
+  img?: string;
+  price: number;
+  options?: { title: string; additionalPrice: number }[];
+};
