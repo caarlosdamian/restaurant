@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { Menu } from '.';
 import CartIcon from './CartIcon';
 import Image from 'next/image';
+import UserLinks from './UserLinks';
 
 const Navbar = () => {
-  const user = false;
+
   return (
     <div className="h-12 text-red-500 p-4 flex justify-between items-center border-b-2 border-b-red-500 uppercase md:h-24 lg:px-20 lx:px-40">
       <div className="hidden md:flex gap-4 flex-1">
@@ -24,11 +25,7 @@ const Navbar = () => {
           <Image src="/phone.png" alt="phone" height={20} width={20} />
           <span>123 456 78</span>
         </div>
-        {!user ? (
-          <Link href="/login">Login</Link>
-        ) : (
-          <Link href="/orders">Orders</Link>
-        )}
+        <UserLinks/>
         <CartIcon />
       </div>
     </div>
