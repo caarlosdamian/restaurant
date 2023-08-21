@@ -1,30 +1,31 @@
 'use client';
+import { Product } from '@/types/types';
 import React, { useEffect, useState } from 'react';
 
 interface Props {
-  options?: { title: string; additionalPrice: number }[];
-  id: number;
-  price: number;
+  product: Product;
 }
 
-const Price = ({ price, id, options }: Props) => {
-  const [totalPrice, setTotalPrice] = useState<number>(price);
+const Price = ({ product }: Props) => {
+  console.log('===product==', product);
+  const [totalPrice, setTotalPrice] = useState<number>(product.price);
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedItem, setselectedItem] = useState(0);
-
   useEffect(() => {
-    setTotalPrice(
-      quantity *
-        (options ? price + options[selectedItem].additionalPrice : price)
-    );
-  }, [selectedItem, quantity, price, options]);
+    if (product.options?.length) {
+      setTotalPrice(
+        quantity * product.price + product.options[selectedItem].additionalPrice
+      );
+    }
+    setTotalPrice(quantity * product.price);
+  }, [quantity, selectedItem, product]);
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">${totalPrice.toFixed(2)}</h2>
+      <h2 className="text-2xl font-bold">${totalPrice}</h2>
       <div className="flex gap-4">
-        {options &&
-          options.map((option, index) => (
+        {product.options?.length !== 0 &&
+          product.options?.map((option, index) => (
             <button
               className="ring-1 ring-red-400 rounded-md p-2 min-w-[6rem] cursor-pointer"
               style={{
