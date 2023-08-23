@@ -19,6 +19,7 @@ export const useCartStore = create(
         const productInState = products.find(
           (element) => element.id === item.id
         );
+        console.log('-===productInState===', productInState);
         if (productInState) {
           const updatedProducts = products.map((product) =>
             product.id === productInState.id
@@ -32,13 +33,13 @@ export const useCartStore = create(
           set((state) => ({
             products: updatedProducts,
             totalItems: state.totalItems + item.quantity,
-            totalPrice: state.totalPrice + item.price,
+            totalPrice: state.totalPrice + parseFloat(item.price.toString()),
           }));
         } else {
           set((state) => ({
             products: [...state.products, item],
             totalItems: state.totalItems + item.quantity,
-            totalPrice: state.totalPrice + item.price,
+            totalPrice: state.totalPrice + parseFloat(item.price.toString()),
           }));
         }
       },

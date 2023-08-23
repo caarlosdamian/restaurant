@@ -1,14 +1,41 @@
 'use client';
 import { useCartStore } from '@/utils/store';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 const CartPage = () => {
   const { products, removeFromCart, totalItems, totalPrice } = useCartStore();
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     useCartStore.persist.rehydrate();
   }, []);
+
+  const handleCheckout = async () => {
+    if (!session) {
+      router.push('/login');
+    } else {
+      try {
+        const res = await fetch('http://localhost:3000/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            price: totalPrice,
+            products: products,
+            status: 'Not Paid',
+            userEmail: session.user.email,
+          }),
+        });
+        const data = await res.json();
+        router.push(`/pay/${data.id}`);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-red-500 lg:flex-row">
@@ -50,13 +77,15 @@ const CartPage = () => {
           <span className="">Delivery Cost</span>
           <span className="text-green-500">FREE</span>
         </div>
-
         <hr className="my-2" />
         <div className="flex justify-between">
           <span className="">TOTAL(INCL. VAT)</span>
           <span className="font-bold">${totalPrice}</span>
         </div>
-        <button className="bg-red-500 text-white p-3 rounded-md w-1/2 self-end">
+        <button
+          className="bg-red-500 text-white p-3 rounded-md w-1/2 self-end"
+          onClick={handleCheckout}
+        >
           CHECKOUT
         </button>
       </div>
