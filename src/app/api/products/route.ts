@@ -20,3 +20,20 @@ export const GET = async (req: NextRequest) => {
     );
   }
 };
+
+export const POST = async (req: NextRequest) => {
+  const body = await req.json();
+  //localhost/api/porducts?cat='pizzas'
+
+  try {
+    const product = await prisma.product.create({
+      data: body,
+    });
+    return new NextResponse(JSON.stringify(product), { status: 200 });
+  } catch (error) {
+    return new NextResponse(
+      JSON.stringify({ message: 'Something went worng!' }),
+      { status: 500 }
+    );
+  }
+};
